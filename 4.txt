@@ -1,0 +1,65 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int pid[n], at[n], bt[n], rt[n], pr[n], ct[n], wt[n], tat[n];
+
+    for(int i = 0; i < n; i++) {
+        printf("Enter AT, BT and Priority for P%d: ", i+1);
+        scanf("%d %d %d", &at[i], &bt[i], &pr[i]);
+        pid[i] = i + 1;
+        rt[i] = bt[i];   // remaining time
+    }
+
+    int time = 0, completed = 0;
+
+    while(completed < n) {
+        int index = -1;
+        int highest_priority = 9999;
+
+        // find highest priority process
+        for(int i = 0; i < n; i++) {
+            if(at[i] <= time && rt[i] > 0) {
+                if(pr[i] < highest_priority) {
+                    highest_priority = pr[i];
+                    index = i;
+                }
+            }
+        }
+
+        if(index == -1) {
+            time++;   // CPU idle
+        } else {
+            rt[index]--;
+            time++;
+
+            if(rt[index] == 0) {
+                ct[index] = time;
+                tat[index] = ct[index] - at[index];
+                wt[index] = tat[index] - bt[index];
+                completed++;
+            }
+        }
+    }
+
+    float total_wt = 0, total_tat = 0;
+
+    printf("\nPID\tAT\tBT\tPR\tCT\tTAT\tWT\n");
+
+    for(int i = 0; i < n; i++) {
+        total_wt += wt[i];
+        total_tat += tat[i];
+
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+               pid[i], at[i], bt[i], pr[i], ct[i], tat[i], wt[i]);
+    }
+
+    printf("\nAverage Waiting Time: %.2f", total_wt/n);
+    printf("\nAverage Turnaround Time: %.2f\n", total_tat/n);
+
+    return 0;
+}

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+file="trains.txt"
+
+# Create file if not exists
+touch $file
+
+while true
+do
+    echo "---------------------------"
+    echo "1. Add Train Record"
+    echo "2. View Records"
+    echo "3. Update Record"
+    echo "4. Delete Record"
+    echo "5. Exit"
+    echo "---------------------------"
+
+    read -p "Enter your choice: " ch
+
+    case $ch in
+        1)
+            read -p "Enter Train Number: " tno
+            read -p "Enter Train Name: " tname
+            echo "$tno $tname" >> $file
+            echo "Record Added!"
+            ;;
+        
+        2)
+            echo "Train Records:"
+            if [ -s $file ]; then
+                cat $file
+            else
+                echo "No records found!"
+            fi
+            ;;
+        
+        3)
+            read -p "Enter Train Number to update: " tno
+            if grep -q "^$tno " $file; then
+                grep -v "^$tno " $file > temp.txt
+                read -p "Enter New Train Name: " tname
+                echo "$tno $tname" >> temp.txt
+                mv temp.txt $file
+                echo "Record Updated!"
+            else
+                echo "Record not found!"
+            fi
+            ;;
+        
+        4)
+            read -p "Enter Train Number to delete: " tno
+            if grep -q "^$tno " $file; then
+                grep -v "^$tno " $file > temp.txt
+                mv temp.txt $file
+                echo "Record Deleted!"
+            else
+                echo "Record not found!"
+            fi
+            ;;
+        
+        5)
+            echo "Exiting..."
+            exit
+            ;;
+        
+        *)
+            echo "Invalid choice!"
+            ;;
+    esac
+done

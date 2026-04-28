@@ -1,0 +1,72 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    int req[n];
+
+    printf("Enter request queue: ");
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &req[i]);
+    }
+
+    int head;
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    int total_seek = 0;
+
+    // Sort requests (bubble sort)
+    for(int i = 0; i < n-1; i++) {
+        for(int j = 0; j < n-i-1; j++) {
+            if(req[j] > req[j+1]) {
+                int temp = req[j];
+                req[j] = req[j+1];
+                req[j+1] = temp;
+            }
+        }
+    }
+
+    int index;
+
+    // Find first request greater than head
+    for(int i = 0; i < n; i++) {
+        if(req[i] >= head) {
+            index = i;
+            break;
+        }
+    }
+
+    printf("\nSeek Sequence: %d ", head);
+
+    // Move right side
+    for(int i = index; i < n; i++) {
+        int diff = (head > req[i]) ? (head - req[i]) : (req[i] - head);
+        total_seek += diff;
+        head = req[i];
+        printf("-> %d ", head);
+    }
+
+    // Jump to beginning (circular)
+    if(index > 0) {
+        int diff = (head > req[0]) ? (head - req[0]) : (req[0] - head);
+        total_seek += diff;
+        head = req[0];
+        printf("-> %d ", head);
+    }
+
+    // Continue from beginning to left side
+    for(int i = 0; i < index; i++) {
+        int diff = (head > req[i]) ? (head - req[i]) : (req[i] - head);
+        total_seek += diff;
+        head = req[i];
+        printf("-> %d ", head);
+    }
+
+    printf("\n\nTotal Seek Time = %d\n", total_seek);
+
+    return 0;
+}

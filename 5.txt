@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int pid[n], at[n], bt[n], rt[n], ct[n], wt[n], tat[n];
+
+    for(int i = 0; i < n; i++) {
+        printf("Enter Arrival Time and Burst Time for P%d: ", i+1);
+        scanf("%d %d", &at[i], &bt[i]);
+        pid[i] = i + 1;
+        rt[i] = bt[i];   // remaining time
+    }
+
+    int time = 0, completed = 0;
+
+    while(completed < n) {
+        int min_rt = 9999, index = -1;
+
+        for(int i = 0; i < n; i++) {
+            if(at[i] <= time && rt[i] > 0) {
+                if(rt[i] < min_rt) {
+                    min_rt = rt[i];
+                    index = i;
+                }
+            }
+        }
+
+        if(index == -1) {
+            time++;
+        } else {
+            rt[index]--;
+            time++;
+
+            if(rt[index] == 0) {
+                ct[index] = time;
+                tat[index] = ct[index] - at[index];
+                wt[index] = tat[index] - bt[index];
+                completed++;
+            }
+        }
+    }
+    float total_wt = 0, total_tat = 0;
+
+    printf("\nPID\tAT\tBT\tCT\tTAT\tWT\n");
+
+    for(int i = 0; i < n; i++) {
+        total_wt += wt[i];
+        total_tat += tat[i];
+
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",
+               pid[i], at[i], bt[i], ct[i], tat[i], wt[i]);
+    }
+
+    printf("\nAverage Waiting Time: %.2f", total_wt/n);
+    printf("\nAverage Turnaround Time: %.2f\n", total_tat/n);
+
+    return 0;
+}

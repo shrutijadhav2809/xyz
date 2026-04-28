@@ -1,0 +1,92 @@
+#include <stdio.h>
+
+int main() {
+    int n, f;
+
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
+
+    int pages[n];
+    printf("Enter page reference string: ");
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &pages[i]);
+    }
+
+    printf("Enter number of frames: ");
+    scanf("%d", &f);
+
+    int frame[f];
+    int page_faults = 0;
+
+    // Initialize frames
+    for(int i = 0; i < f; i++) {
+        frame[i] = -1;
+    }
+
+    for(int i = 0; i < n; i++) {
+        int found = 0;
+
+        // Check if page is already present
+        for(int j = 0; j < f; j++) {
+            if(frame[j] == pages[i]) {
+                found = 1;
+                break;
+            }
+        }
+
+        // If page not found → page fault
+        if(found == 0) {
+            int pos = -1;
+            int farthest = i + 1;
+
+            for(int j = 0; j < f; j++) {
+                int k;
+
+                // Find next use of frame[j]
+                for(k = i + 1; k < n; k++) {
+                    if(frame[j] == pages[k]) {
+                        if(k > farthest) {
+                            farthest = k;
+                            pos = j;
+                        }
+                        break;
+                    }
+                }
+
+                // If page is never used again
+                if(k == n) {
+                    pos = j;
+                    break;
+                }
+
+                // If empty frame found
+                if(frame[j] == -1) {
+                    pos = j;
+                    break;
+                }
+            }
+
+            // If no position selected yet
+            if(pos == -1) {
+                pos = 0;
+            }
+
+            frame[pos] = pages[i];
+            page_faults++;
+        }
+
+        // Print frames (good for viva)
+        printf("Frames: ");
+        for(int j = 0; j < f; j++) {
+            if(frame[j] != -1)
+                printf("%d ", frame[j]);
+            else
+                printf("- ");
+        }
+        printf("\n");
+    }
+
+    printf("\nTotal Page Faults = %d\n", page_faults);
+
+    return 0;
+}

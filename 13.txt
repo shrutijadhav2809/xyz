@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    int req[n];
+
+    printf("Enter the request queue: ");
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &req[i]);
+    }
+
+    int head;
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    int total_seek = 0;
+
+    printf("\nSeek Sequence: %d ", head);
+
+    for(int i = 0; i < n; i++) {
+        int diff;
+
+        // Calculate absolute difference manually
+        if(head > req[i])
+            diff = head - req[i];
+        else
+            diff = req[i] - head;
+
+        total_seek += diff;
+        head = req[i];
+
+        printf("-> %d ", head);
+    }
+
+    printf("\n\nTotal Seek Time = %d\n", total_seek);
+
+    return 0;
+}

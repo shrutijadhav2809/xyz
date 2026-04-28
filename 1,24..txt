@@ -1,0 +1,46 @@
+#!/bin/bash
+
+file="students.txt"
+
+while true
+do
+    echo "1. Add Record"
+    echo "2. View Records"
+    echo "3. Update Record"
+    echo "4. Delete Record"
+    echo "5. Exit"
+    read -p "Enter choice: " ch
+
+    case $ch in
+        1)
+            read -p "Enter Roll No: " roll
+            read -p "Enter Name: " name
+            echo "$roll $name" >> $file
+            echo "Record Added!"
+            ;;
+        2)
+            echo "Records:"
+            cat $file
+            ;;
+        3)
+            read -p "Enter Roll No to update: " roll
+            grep -v "^$roll " $file > temp.txt
+            read -p "Enter New Name: " name
+            echo "$roll $name" >> temp.txt
+            mv temp.txt $file
+            echo "Record Updated!"
+            ;;
+        4)
+            read -p "Enter Roll No to delete: " roll
+            grep -v "^$roll " $file > temp.txt
+            mv temp.txt $file
+            echo "Record Deleted!"
+            ;;
+        5)
+            exit
+            ;;
+        *)
+            echo "Invalid choice"
+            ;;
+    esac
+done

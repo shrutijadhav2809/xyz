@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    int req[n], visited[n];
+
+    printf("Enter the request queue: ");
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &req[i]);
+        visited[i] = 0;   // not serviced yet
+    }
+
+    int head;
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    int total_seek = 0;
+
+    printf("\nSeek Sequence: %d ", head);
+
+    for(int count = 0; count < n; count++) {
+        int min_dist = 9999;
+        int index = -1;
+
+        // Find closest request
+        for(int i = 0; i < n; i++) {
+            if(visited[i] == 0) {
+                int diff;
+
+                if(head > req[i])
+                    diff = head - req[i];
+                else
+                    diff = req[i] - head;
+
+                if(diff < min_dist) {
+                    min_dist = diff;
+                    index = i;
+                }
+            }
+        }
+
+        // Move head to closest request
+        total_seek += min_dist;
+        head = req[index];
+        visited[index] = 1;
+
+        printf("-> %d ", head);
+    }
+
+    printf("\n\nTotal Seek Time = %d\n", total_seek);
+
+    return 0;
+}
