@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to sort the array (Bubble Sort)
+void sort(int arr[], int n) {
+    int i, j, temp;
+    for(i = 0; i < n - 1; i++) {
+        for(j = 0; j < n - i - 1; j++) {
+            if(arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    int n, head, size, direction;
+    int request[100];
+    int i, total_seek = 0;
+
+    printf("Enter total number of tracks: ");
+    scanf("%d", &size);
+
+    printf("Enter number of requests: ");
+    scanf("%d", &n);
+
+    printf("Enter request sequence: ");
+    for(i = 0; i < n; i++) {
+        scanf("%d", &request[i]);
+    }
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("Enter direction (0 = left, 1 = right): ");
+    scanf("%d", &direction);
+
+    // Sort the request array
+    sort(request, n);
+
+    int index;
+
+    // Find index where head fits
+    for(i = 0; i < n; i++) {
+        if(head < request[i]) {
+            index = i;
+            break;
+        }
+    }
+
+    // SCAN Algorithm
+    if(direction == 1) { // Move right
+        for(i = index; i < n; i++) {
+            total_seek += abs(request[i] - head);
+            head = request[i];
+        }
+
+        // Go to end
+        total_seek += abs((size - 1) - head);
+        head = size - 1;
+
+        // Then move left
+        for(i = index - 1; i >= 0; i--) {
+            total_seek += abs(request[i] - head);
+            head = request[i];
+        }
+    }
+    else { // Move left
+        for(i = index - 1; i >= 0; i--) {
+            total_seek += abs(request[i] - head);
+            head = request[i];
+        }
+
+        // Go to start
+        total_seek += abs(0 - head);
+        head = 0;
+
+        // Then move right
+        for(i = index; i < n; i++) {
+            total_seek += abs(request[i] - head);
+            head = request[i];
+        }
+    }
+
+    printf("Total Seek Time = %d\n", total_seek);
+
+    return 0;
+}
